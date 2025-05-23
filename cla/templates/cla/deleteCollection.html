@@ -1,0 +1,21 @@
+{# templates/cla/deleteCollection.html #}
+<div class="modal-header">
+    <h5 class="modal-title text-danger">Delete "{{ collection.name }}"</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<form method="POST" action="{% url 'cla:deleteCollectionSubmit' collection.id %}">
+    {% csrf_token %}
+    <div class="modal-body">
+        <p>Are you sure you want to permanently delete <strong>{{ collection.name }}</strong>?</p>
+        <p class="small text-muted">Please type the collection's name exactly to confirm.</p>
+
+        <div class="mb-3">
+            <label for="confirm_name" class="form-label">Confirm collection name</label>
+            <input type="text" class="form-control" id="confirm_name" name="confirm_name" placeholder="Enter '{{ collection.name }}'" required>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-danger">Delete Permanently</button>
+    </div>
+</form>

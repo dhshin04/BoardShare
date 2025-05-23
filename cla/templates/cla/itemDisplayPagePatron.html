@@ -1,0 +1,624 @@
+{% load static %}
+{% load bootstrap5 %}
+<script>
+    var collectionAddUrl = "{% url 'cla:addToCollection' %}";
+    var csrfToken = "{{ csrf_token }}";
+</script>
+<script src="{% static 'js/addToCollection.js' %}"></script>
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+<style>
+.item-buttons,
+.collection-buttons {
+    display: inline-flex;
+    align-items: center;
+    gap: 1rem;      
+    margin-left: 1rem;
+    vertical-align: middle;
+}
+.inline-header {
+  display: inline-block;
+  margin-bottom: 0; /* kill default H1 bottom margin */
+}
+</style>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Collection - BoardShare</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #f9fafb;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f3f4f6;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .upload-container {
+            flex: 1;
+            padding: 2rem 0;
+        }
+        
+        .upload-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+        
+        .upload-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 2rem;
+            color: white;
+            text-align: center;
+        }
+        
+        .upload-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+        
+        .upload-subtitle {
+            opacity: 0.9;
+        }
+        
+        .upload-body {
+            padding: 2rem;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .alert {
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0rem;
+            border: none;
+        }
+        
+        .alert-success {
+            background-color: #ecfdf5;
+            color: #065f46;
+        }
+        
+        .alert-danger {
+            background-color: #fef2f2;
+            color: #b91c1c;
+        }
+        
+        .alert-warning {
+            background-color: #fffbeb;
+            color: #92400e;
+        }
+        
+        .alert-info {
+            background-color: #eff6ff;
+            color: #1e40af;
+        }
+        
+        .footer {
+            background-color: white;
+            padding: 1.5rem 0;
+            margin-top: auto;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .custom-file-input::-webkit-file-upload-button {
+            visibility: hidden;
+        }
+        
+        .custom-file-input::before {
+            content: 'Select file';
+            display: inline-block;
+            background: var(--secondary);
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            outline: none;
+            white-space: nowrap;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+        
+        .custom-file-input:hover::before {
+            border-color: var(--primary);
+        }
+        
+        .custom-file-input:active::before {
+            background: #e5e7eb;
+        }
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem 0;
+        }
+        
+        .game-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.2s ease;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .game-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .game-body {
+            padding: 1.25rem;
+        }
+        
+        .game-title {
+            font-weight: 600;
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .game-text {
+            color: var(--text-light);
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .game-meta {
+            padding: 0.75rem 1.25rem;
+            background: var(--secondary);
+            font-size: 0.875rem;
+        }
+        
+        .game-meta-item {
+            display: flex;
+            align-items: center;
+            color: var(--text-light);
+        }
+        
+        .game-meta-item i {
+            margin-right: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .game-actions {
+            padding: 1rem 1.25rem;
+            display: flex;
+        }
+        
+        .btn-view {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .btn-view:hover {
+            background-color: var(--primary-dark);
+            color: white;
+        }
+        
+        .btn-view i {
+            margin-right: 0.5rem;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .footer {
+            background-color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .bg-purple {
+            background-color: var(--primary) !important;
+        }
+
+        #collectionPopup {
+            display: none; /* Hide the popup initially */
+        }        
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'cla:patronSearch' %}">BoardShare</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cla:patronSearch' %}">Browse Games</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cla:addCollectionPatron' %}">Add Collection</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cla:viewCollectionsPatron' %}">My Collections</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cla:patronNotifications' %}">My Notifications</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cla:patronItemsBorrowed' %}">Items Borrowed</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cla:logout' %}">Logout</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <a href="{% url 'cla:patronProfile' %}">
+                        {% if user.profile.image %}
+                            <img src="{{ user.profile.image.url }}" 
+                            alt="Profile image" 
+                            class="rounded-circle img-fluid me-3 profile-avatar"
+                            style="width: 50px; height: 50px; object-fit: cover;"   
+                            >
+                        {% else %}
+                            <img src="https://boardshare-bkt-1.s3.us-east-1.amazonaws.com/profile_pics/default.jpg" 
+                            alt="Profile image" 
+                            class="rounded-circle img-fluid me-3 profile-avatar"
+                            style="width: 50px; height: 50px; object-fit: cover;"   
+                            >
+                        {% endif %}
+                    </a>
+                    <div>
+                        <p class="mb-0">{{ user.username }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container upload-container">
+        <div id="message-container" class="alert" style="display: none;"></div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <div class="container">
+            <div class="row mt-3"> 
+                <div class="h1">
+                    <h1 class="inline-header">{{ item.title }}</h1>
+                    {% if is_owner %}
+                    <div class="item-buttons">
+                        <button class="btn btn-primary edit-item-btn" data-item-id="{{ item.id }}" onclick="editItem()">
+                            <i class="fas fa-pen"></i> 
+                        </button>
+                        <button class="btn btn-primary delete-item-btn" data-item-id="{{ item.id }}" onclick="deleteItem()">
+                            <i class="fas fa-trash-can"></i> 
+                        </button>
+                    </div>
+                    {% endif %}
+                    <h5 class="fs-5 mt-2">{{ item.description }}</h5>
+                    <hr>
+                </div>
+                <div class="col-6">
+                    <i class="fas fa-user"></i> {{ item.owner }}
+                    <br>
+                    <i class="fas fa-calendar"></i> {{ item.uploaded_at|date:"M d, Y" }}
+                    <br>
+                    <i class="fas fa-map-marker-alt"></i> {{ item.location }}
+                    <br>
+                    <i class="fas fa-globe"></i> {{ item.status }}
+                    <br>
+                    {% if average_rating == 0 %} 
+                        <i class="fas fa-star mb-4"></i> Not yet rated
+                    {% else %}
+                        <i class="fas fa-star mb-4"></i> Average Rating: {{ average_rating }} / 5.0
+                    {% endif %}
+                    
+                    <br>
+                    {% if item.status == 'available' %}
+                        <a href="#" class="btn-view request-item" data-item-id="{{ item.id }}">
+                            <i class="fas fa-box"></i> Request Item
+                        </a>
+                    {% elif item.status == 'unavailable' and user_has_approved_request %}
+                        <p class="text-success fw-bold">Ready for pickup!</p>
+                    {% else %}
+                        <p><strong>Not available for request</strong></p>
+                    {% endif %}
+                    <br>
+                    <br>
+                    <br>
+
+                    <!-- <button class="btn btn-primary btn-add" data-item-id="{{ item.id }}" onclick="openAddToCollectionPopup(this)">
+                        <i class="fas fa-plus"></i> Add to Collection
+                    </button> -->
+            
+                    <div class="modal fade" id="collectionModal" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content slide-down" id="collectionModalBody">
+                                <!-- Content is injected here via JS -->
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="inline-header mb-3">Similar Games: </h4>
+                    {% if similar_items %}
+                        <div class="list-group">
+                            {% for game in similar_items %}
+                            <a class="list-group-item" href="{% url 'cla:itemDisplayPatron' game.id %}">{{ game }}</a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="alert alert-warning">No similar games.</p>
+                    {% endif %}
+                </div>
+                <div class="col-6">
+                    {% if item.images %}
+                        {% include "./partials/_itemImageCarousel.html" with images=item.images.all carousel_id=carousel_item_id %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col-6">
+                    <h4 class="inline-header mb-3">Collections: </h4>
+                    <div class="collection-buttons">
+                        <button class="btn btn-primary add-to-collection-btn" data-item-id="{{ item.id }}" onclick="addItemToCollection()">
+                            <i class="fas fa-plus"></i> 
+                        </button>
+                        <button class="btn btn-primary delete-from-collection-btn" data-item-id="{{ item.id }}" onclick="deleteItemFromCollection()">
+                            <i class="fas fa-minus"></i> 
+                        </button>
+                    </div>
+                    {% if collections %}
+                        <div class="list-group">
+                            {% for collection in collections %}
+                                <a class="list-group-item" href="{% url 'cla:publicCollectionDisplayPatron' collection.id %}">{{ collection.name }}</a>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <br>
+                        <p class="alert alert-warning">This item is currently in no collections.</p>
+                    {% endif %}
+                </div>
+                <div class="col-6">
+                    <h4 class="inline-header mb-3">Tags: </h4>
+                    <br>
+                    {% if item.tags.all %}
+                        {% for tag in item.tags.all %}
+                            <i class="fas fa-tag"></i> <a href="{% url 'cla:search' %}?filter=tag&tag={{ tag }}" class="badge rounded-pill bg-purple text-white text-decoration-none shadow-sm">{{ tag }}</a>
+                            <br>
+                        {% endfor %}
+                    {% else %}
+                        <p class="alert alert-warning">This item currently has no tags associated.</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <br>
+            <div class="mt-4">
+                <h4>Ratings and Comments:</h4>
+                {% if reviews %}
+                <div class="game-grid">
+                    {% for review in reviews %}
+                    <div class="game-card">
+                        <div class="game-body">
+                            <p class="game-title">Rating: {{ review.rating }}</p>
+                            <p class="game-text">By {{ review.user }}</p>
+                            <p class="game-text">Comment: {{ review.comment }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="alert alert-warning">No reviews available yet for this item.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="upload-card mt-5">
+            <div class="upload-header">
+                <h1 class="upload-title">Add a Review</h1>
+            </div>
+            
+            <div class="upload-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %} 
+                    {% bootstrap_form form %}
+                    <div class="d-flex justify-content-center mt-4">
+                        <button class="btn btn-primary" type="submit">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% include './partials/_footer.html' %}
+    
+    
+    <script>
+        // https://www.w3schools.com/js/js_htmldom_eventlistener.asp
+        // help with JS and client-side user interaction
+        document.querySelectorAll('.request-item').forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent default anchor behavior
+    
+                const itemId = this.getAttribute('data-item-id');
+    
+                fetch(`/requestItem/${itemId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json().then(data => ({ status: response.status, body: data })))
+                .then(({ status, body }) => {
+                    if (status === 200) {
+                        showMessage(body.message, 'success');
+                    } else {
+                        showMessage(body.message, 'danger');
+                    }
+                })
+                .catch(error => {
+                    showMessage('An unexpected error occurred. Please try again.', 'danger');
+                    console.error('Error:', error);
+                });
+            });
+        });
+    
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById('message-container');
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `alert alert-${type} alert-dismissible fade show`;
+            msgDiv.role = 'alert';
+            msgDiv.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            messageContainer.prepend(msgDiv);
+
+            // messageContainer.innerText = message;
+            // messageContainer.className = `alert alert-${type}`;
+            messageContainer.style.display = 'block';
+            messageContainer.style.padding = '0rem';
+        }
+
+        /*
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        */
+    </script>
+    
+        
+        
+    <script>
+        // https://www.w3schools.com/js/js_htmldom_eventlistener.asp
+        // help with JS and client-side user interaction
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+            fileInputs.forEach(input => {
+                input.classList.add('custom-file-input');
+            });
+        });
+
+        const addItemToCollection = () => {
+            const button = document.querySelector(".add-to-collection-btn");
+            const itemId = button.getAttribute("data-item-id");
+            fetch(`/addItemToCollection/${itemId}/`)
+            .then(response => response.text())
+            .then(html => {
+                const modalBody = document.getElementById('collectionModalBody');
+                modalBody.innerHTML = html;
+                const modal = new bootstrap.Modal(document.getElementById('collectionModal'));
+                modal.show();
+            });
+        }
+
+        const deleteItemFromCollection = () => {
+            const button = document.querySelector(".delete-from-collection-btn");
+            const itemId = button.getAttribute("data-item-id");
+            fetch(`/deleteItemFromCollection/${itemId}/`, {
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(response => response.text())
+            .then(html => {
+                const modalBody = document.getElementById('collectionModalBody');
+                modalBody.innerHTML = html;
+                const modal = new bootstrap.Modal(document.getElementById('collectionModal'));
+                modal.show();
+            });
+        }
+    </script>
+  </body>
+</html>

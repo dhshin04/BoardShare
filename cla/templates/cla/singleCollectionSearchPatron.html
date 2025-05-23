@@ -1,0 +1,556 @@
+{% load static %}
+{% load bootstrap5 %}
+
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Browse Games - BoardShare</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #f9fafb;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f3f4f6;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+        
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .search-container {
+            padding: 2rem 0;
+        }
+        
+        .search-wrapper {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .search-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .search-input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-input {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            padding-right: 3rem;
+            width: 100%;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            outline: none;
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 1rem;
+            color: var(--text-light);
+            font-size: 1.25rem;
+        }
+        
+        .category-filters {
+            padding: 1rem 1.5rem;
+            background: var(--secondary);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 9999px;
+            font-size: 1rem;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-chip i {
+            margin-right: 0.5rem;
+            font-size: 1rem;
+        }
+        
+        .filter-chip:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .filter-chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem 0;
+        }
+        
+        .game-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.2s ease;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .game-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .game-body {
+            padding: 1.25rem;
+        }
+        
+        .game-title {
+            font-weight: 600;
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .game-text {
+            color: var(--text-light);
+            font-size: .9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .game-meta {
+            padding: 0.75rem 1.25rem;
+            background: var(--secondary);
+            font-size: .9rem;
+        }
+        
+        .game-meta-item {
+            display: flex;
+            align-items: center;
+            color: var(--text-light);
+        }
+        
+        .game-meta-item i {
+            margin-right: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .game-actions {
+            padding: 1rem 1.25rem;
+            display: flex;
+        }
+        
+        .btn-view {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .btn-view:hover {
+            background-color: var(--primary-dark);
+            color: white;
+        }
+        
+        .btn-view i {
+            margin-right: 0.5rem;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .search-container {
+            width: 100%;
+        }
+        
+        .search-wrapper {
+            width: 100%;
+        }
+        
+        .search-header {
+            width: 100%;
+        }
+        
+        .search-input-group {
+            width: 100%;
+        }
+
+        form[name="myform"] {
+            width: 100%;
+            display: flex; /* to keep icon and input aligned */
+            align-items: center;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            flex: 1;
+        }
+        
+        .search-icon {
+            margin-left: -30px; /* adjust depending on icon size */
+            z-index: 1;
+            color: #888;
+        }
+
+        .search-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            position: absolute;
+            right: 10px;
+            top: 25%;
+        }
+
+        .filter-chip.active {
+            background-color: #4f46e5;
+            color: white;
+            border-radius: 20px;
+            padding: 6px 12px;
+        }
+        
+        .footer {
+            background-color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        @keyframes slideDown {
+        0% {
+            opacity: 0;
+            transform: translateY(-50px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        }
+
+        .slide-down {
+            animation: slideDown 0.2s ease-out;
+        }
+
+        .item-buttons,
+        .collection-buttons {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;      
+            margin-left: 1rem;
+            vertical-align: middle;
+        }
+        .inline-header {
+        display: inline-block;
+        margin-bottom: 0; /* kill default H1 bottom margin */
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'cla:patronSearch' %}">BoardShare</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cla:patronSearch' %}">Browse Games</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cla:addCollectionPatron' %}">Add Collection</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'cla:viewCollectionsPatron' %}">My Collections</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cla:patronNotifications' %}">My Notifications</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cla:patronItemsBorrowed' %}">Items Borrowed</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cla:logout' %}">Logout</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <a href="{% url 'cla:patronProfile' %}">
+                        {% if user.profile.image %}
+                            <img src="{{ user.profile.image.url }}" 
+                            alt="Profile image" 
+                            class="rounded-circle img-fluid me-3 profile-avatar"
+                            style="width: 50px; height: 50px; object-fit: cover;"   
+                            >
+                        {% else %}
+                            <img src="https://boardshare-bkt-1.s3.us-east-1.amazonaws.com/profile_pics/default.jpg" 
+                            alt="Profile image" 
+                            class="rounded-circle img-fluid me-3 profile-avatar"
+                            style="width: 50px; height: 50px; object-fit: cover;"   
+                            >
+                        {% endif %}
+                    </a>
+                    <div>
+                        <p class="mb-0">{{ user.username }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="mt-4 mb-3">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <h1 class="h3 fw-bold inline-header">{{ collection.name }} Collection</h1>
+            {% if is_owner %}
+                <button class="btn btn-primary edit-collection-btn" data-item-id="{{ collection.id }}" onclick="editCollection()">
+                    <i class="fas fa-pen"></i> 
+                </button>
+                <button class="btn btn-primary delete-collection-btn" data-item-id="{{ collection.id }}" onclick="deleteCollection()">
+                    <i class="fas fa-trash-can"></i> 
+                </button>
+            {% endif %}
+        </header>
+
+
+        {% if collection.is_private %}
+            <div class="alert alert-secondary">
+                <strong>This is a private collection.</strong><br>
+                Accessible to:
+                <ul>
+                    <li><strong>All librarians</strong></li>
+                    {% for user in patrons_with_access %}
+                        <li>{{ user.username }}</li>
+                    {% empty %}
+                        <li>No patrons currently have access.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% else %}
+            <div class="alert alert-secondary">
+                <strong>This is a public collection.</strong> All users have access.
+            </div>
+        {% endif %}
+
+        <div class="search-container">
+            <div class="search-wrapper">
+                <div class="search-header">
+                    <div class="search-input-group">
+                        <form id="search-form" name="myform" method="get" action="{% url 'cla:searchCollection' collection.id %}"> 
+                            <input id="search" type="text" name="search" class="search-input" placeholder="Search boardgames and collections" value="{{ request.GET.search }}">
+                            <input type="hidden" name="filter" id="filter" value="{{ selected_filter|default:'all' }}">
+                            <button type="submit" class="search-button">
+                                <i class="fas fa-search search-icon"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+        
+                <div class="category-filters">
+                    <button class="filter-chip {% if selected_filter == 'all' %}active{% endif %}" data-filter="all">
+                        <i class="fas fa-th-large"></i> All
+                    </button>
+                    <button class="filter-chip {% if selected_filter == 'five-star' %}active{% endif %}" data-filter="five-star">
+                        <i class="fas fa-star"></i> 5 Star Rating
+                    </button>
+                </div>
+            </div>
+        </div>
+
+            {% if items %}
+            <div class="game-grid">
+                {% for item in items %}
+                <div class="game-card">
+                    {% with item.images.all.0 as first_image %}
+                        {% if first_image %}
+                            <img 
+                            src="{{ first_image.image.url }}" 
+                            class="game-img" 
+                            alt="{{ item.title }}">
+                        {% endif %}
+                    {% endwith %}
+                    <div class="game-body">
+                        <h5 class="game-title">{{ item.title }}</h5>
+                        <p class="game-text">{{ item.description|truncatewords:15 }}</p>
+                    </div>
+                    <div class="game-meta">
+                        <div class="game-meta-item">
+                            <i class="fas fa-user"></i> {{ item.owner }}
+                        </div>
+                        <div class="game-meta-item mb-1">
+                            <i class="fas fa-map-marker-alt"></i> {{ item.location }}
+                        </div>
+                        <div class="game-meta-item">
+                            <i class="fas fa-calendar"></i> {{ item.uploaded_at|date:"M d, Y" }}
+                        </div>
+                        <div class="game-meta-item">
+                            {% if item.avg_rating == -1 %}
+                                <i class="fas fa-star"></i> Not Yet Rated
+                            {% else %}
+                                <i class="fas fa-star"></i> {{ item.avg_rating }}    
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="game-actions">
+                        <a href="{% url 'cla:itemDisplayPatron' item.id %}" class="btn-view">
+                            <i class="fas fa-eye"></i> View Details
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="alert alert-warning">No items available.</p>
+            {% endif %}
+            <div class="modal fade" id="collectionModal" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content slide-down" id="collectionModalBody">
+                        <!-- Content is injected here via JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include './partials/_footer.html' %}
+
+    <script>
+        // https://www.w3schools.com/Js/
+        // https://www.w3schools.com/js/js_htmldom_eventlistener.asp
+        // help with JS and client-side user interaction
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("search-form");
+            const filterInput = document.getElementById("filter");
+    
+            document.querySelectorAll(".filter-chip").forEach(button => {
+                button.addEventListener("click", function () {
+                    // update hidden input and submit form
+                    filterInput.value = this.getAttribute("data-filter");
+                    form.submit();
+                });
+            });
+        });
+    </script>
+</body>
+<script>
+    // https://www.w3schools.com/Js/
+    // https://www.w3schools.com/js/js_htmldom_eventlistener.asp
+    // help with JS and client-side user interaction
+    document.addEventListener('DOMContentLoaded', function() {
+        const fileInputs = document.querySelectorAll('input[type="file"]');
+        fileInputs.forEach(input => {
+            input.classList.add('custom-file-input');
+        });
+    });
+
+    const editCollection = () => {
+        const button = document.querySelector(".edit-collection-btn");
+        const itemId = button.getAttribute("data-item-id");
+        fetch(`/editCollection/${itemId}/`)
+        .then(response => response.text())
+        .then(html => {
+            const modalBody = document.getElementById('collectionModalBody');
+            modalBody.innerHTML = html;
+            const modal = new bootstrap.Modal(document.getElementById('collectionModal'));
+            modal.show();
+        });
+    }
+
+    const deleteCollection = () => {
+        const button = document.querySelector(".delete-collection-btn");
+        const itemId = button.getAttribute("data-item-id");
+        fetch(`/deleteCollection/${itemId}/`)
+        .then(response => response.text())
+        .then(html => {
+            const modalBody = document.getElementById('collectionModalBody');
+            modalBody.innerHTML = html;
+            const modal = new bootstrap.Modal(document.getElementById('collectionModal'));
+            modal.show();
+        });
+    }
+</script>
+</html>

@@ -1,0 +1,68 @@
+<!-- Inside addToCollectionPopup.html -->
+
+<head>
+    <style>
+        /* Popup styles */
+        .popup {
+            display: none; /* Hide the popup initially */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        .close {
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <button class="btn-add" data-item-id="{{ item.id }}" onclick="openAddToCollectionPopup(this)">
+        <i class="fas fa-plus"></i> Add to Collection
+    </button>
+
+    <!-- Popup -->
+    <div id="collectionPopup" class="popup">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup()">&times;</span>
+            <h3>Select a Collection</h3>
+            <form id="collectionForm">
+                <input type="hidden" name="item_id" id="popupItemId">
+                <select name="collection_id" id="collectionSelect" required>
+                    {% for collection in collections %}
+                        <option value="{{ collection.id }}">{{ collection.name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Add</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Function to open the popup
+        function openAddToCollectionPopup(button) {
+            let itemId = button.getAttribute("data-item-id");
+            document.getElementById("popupItemId").value = itemId; // Set the item_id to the hidden field
+            document.getElementById("collectionPopup").style.display = "flex"; // Show the popup
+        }
+
+        // Function to close the popup
+        function closePopup() {
+            document.getElementById("collectionPopup").style.display = "none"; // Hide the popup
+        }
+    </script>
+</body>

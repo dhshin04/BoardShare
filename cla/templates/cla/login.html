@@ -1,0 +1,77 @@
+{% load static %}
+{% comment %} <link rel="stylesheet" href="{% static 'polls/style.css' %}"> {% endcomment %}
+{# Load the tag library #}
+{% load bootstrap5 %}
+{% load socialaccount %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{# using this website tutorial to help https://www.w3schools.com/bootstrap5/bootstrap_get_started.php #}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Login for Catalouge and Lending App</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+
+    <body>
+        <nav class="navbar navbar-expand-sm navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="index.html">Cataloging and Lending App Name Here</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <!-- Nothing... -->
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container d-flex justify-content-center align-items-center mt-5">
+            <div class="card p-4 shadow" style="width: 650px;">
+                <h2 class="text-center mb-4">Login</h2>
+                <form>
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <input type="text" class="form-control" placeholder="Enter your username" aria-label="Recipient's username">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="rememberMe">
+                            <label class="form-check-label" for="rememberMe">Remember Me</label>
+                        </div>
+                        <a href="#" class="text-decoration-none">Forgot Password?</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100 mt-2">Login</button>
+                </form>
+                
+                <div class="text-center my-3">
+                    <span class="px-2">OR</span>
+                </div>
+
+                <div class="social-auth">
+                    <a href="{% provider_login_url 'google' %}" class="btn btn-google">
+                        Login with Google
+                    </a>
+                </div>
+
+                <div class="text-center mt-3">
+                    <p>Don't have an account? <a href="register.html" class="text-decoration-none">Register here</a></p>
+                </div>
+            </div>
+        </div>
+
+        {% include './partials/_footer.html' %}
+
+    </body>
+</html>

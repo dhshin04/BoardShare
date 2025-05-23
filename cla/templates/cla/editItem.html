@@ -1,0 +1,103 @@
+{# templates/cla/editItem.html #}
+<div class="modal-header">
+    <h5 class="modal-title">Edit "{{ item.title }}"</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<style>
+    .custom-checkbox-big input[type="checkbox"] {
+        width: 1.5em;
+        height: 1.5em;
+        transform: translateY(0.15em); /* Keeps alignment nice */
+    }
+
+    .custom-checkbox-big .form-check-label {
+        font-size: 1.1rem;
+        margin-left: 0.5em;
+    }
+</style>
+
+<form method="POST" action="{% url 'cla:editItemSubmit' item.id %}" enctype="multipart/form-data">
+    <div class="modal-body">
+        {% csrf_token %}
+        {# Render the main item form #}
+        {{ form.non_field_errors }}
+        {% for field in form %}
+            <div class="mb-3">
+                {{ field.label_tag }}
+                {{ field }}
+                {{ field.errors }}
+            </div>
+        {% endfor %}
+        <hr>
+        <h5>Manage Images</h5>
+        <p class="text-muted mb-2" style="font-size: 0.875rem;">* The first image will be used as the thumbnail.</p>
+        {# Inline formset management form - critical for proper formset handling #}
+        {{ formset.management_form }}
+        <ul class="list-unstyled">
+            {% for img_form in formset %}
+                <li class="mb-3 d-flex align-items-center">
+                    {# Include all hidden fields for this form #}
+                    {% for hidden in img_form.hidden_fields %}
+                        {{ hidden }}
+                    {% endfor %}
+                    
+                    {% if img_form.instance.pk and img_form.instance.image %}
+                        <img src="{{ img_form.instance.image.url }}" height="80" class="me-3 rounded" />
+                    {% endif %}
+                    
+                    <div class="row align-items-center mb-3">
+                        <div class="col">
+                            {% if forloop.last and not img_form.instance.pk %}
+                                {# Last form (new image) #}
+                                <div class="input-group">
+                                    <label class="input-group-text" for="{{ img_form.image.auto_id }}">Add Image</label>
+                                    <input type="file" name="{{ img_form.image.html_name }}" id="{{ img_form.image.auto_id }}" class="form-control">
+                                </div>
+                            {% else %}
+                                {# Existing image #}
+                                <div class="input-group">
+                                    <!-- <label class="input-group-text" for="{{ img_form.image.auto_id }}">Change:</label> -->
+                                    <!-- <input type="file" name="{{ img_form.image.html_name }}" id="{{ img_form.image.auto_id }}" class="form-control"> -->
+                                </div>
+                            {% endif %}
+                            <span class="form-text text-danger">{{ img_form.image.errors }}</span>
+                        </div>
+                    
+                        {% if img_form.instance.pk %}
+                            <div class="col-auto d-flex align-items-center">
+                                <div class="form-check custom-checkbox-big mb-0">
+                                    {{ img_form.DELETE }}
+                                    <label class="form-check-label" for="{{ img_form.DELETE.id_for_label }}">
+                                        Delete
+                                    </label>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                    </div>
+                    
+                    
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Save changes</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+    </div>
+</form>
+
+<script>
+// Add script to show selected filenames
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInputs = document.querySelectorAll('.form-control-file');
+    fileInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            const fileNameSpan = this.parentElement.querySelector('.selected-file-name');
+            if (fileNameSpan) {
+                fileNameSpan.textContent = this.files.length > 0 ? this.files[0].name : '';
+            }
+        });
+    });
+});
+</script>

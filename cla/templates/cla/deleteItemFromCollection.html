@@ -1,0 +1,21 @@
+{# templates/cla/addItemToCollection.html #}
+<div class="modal-header">
+    <h5 class="modal-title">Delete "{{ item.title }}" from a Collection</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+{% if collections %}
+<form method="POST" action="{% url 'cla:deleteItemFromCollectionSubmit' item.id %}">
+    {% csrf_token %}
+    <div class="modal-body">
+        <label for="collection">Choose a Collection:</label>
+        <select name="collection_id" class="form-select">
+            {% for collection in collections %}
+                <option value="{{ collection.id }}">{{ collection.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Delete from Collection</button>
+    </div>
+</form>
+{% endif %}

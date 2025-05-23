@@ -1,0 +1,415 @@
+{% load static %}
+{% load bootstrap5 %}
+
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Profile - BoardShare</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #f9fafb;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f3f4f6;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+        
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .profile-container {
+            padding: 3rem 0;
+        }
+        
+        .profile-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+        
+        .profile-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            color: white;
+        }
+        
+        .profile-avatar-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .profile-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid white;
+            background-color: #e5e7eb;
+            object-fit: cover;
+        }
+        
+        .avatar-placeholder {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid white;
+            background-color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: var(--text-light);
+        }
+        
+        .avatar-upload {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            color: var(--primary);
+            transition: all 0.2s ease;
+        }
+        
+        .avatar-upload:hover {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .profile-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-role {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        
+        .profile-body {
+            padding: 2rem;
+        }
+        
+        .profile-section {
+            margin-bottom: 2rem;
+        }
+        
+        .profile-section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .btn-save {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-save:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .upload-preview {
+            width: 100%;
+            max-width: 300px;
+            margin: 1rem auto;
+            border-radius: 8px;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .upload-preview img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .footer {
+            background-color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'cla:patronSearch' %}">BoardShare</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                {% if is_librarian %}
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'cla:librarianSearch' %}">Browse Games</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'librarians:upload' %}">Upload Game</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'cla:viewMyGames' %}">My Games</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'cla:addCollection' %}">Add Collection</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'cla:viewCollectionsLibrarian' %}">My Collections</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'cla:manageAccessRequests' %}">Manage Requests</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'cla:logout' %}">Logout</a>
+                        </li>
+                    </ul>
+                {% else %}
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'cla:patronSearch' %}">Browse Games</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'cla:addCollectionPatron' %}">Add Collection</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'cla:viewCollectionsPatron' %}">My Collections</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'cla:patronNotifications' %}">My Notifications</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'cla:patronItemsBorrowed' %}">Items Borrowed</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'cla:logout' %}">Logout</a>
+                        </li>
+                    </ul>
+                {% endif %}
+                <div class="d-flex align-items-center">
+                    <a href="{% url 'cla:patronProfile' %}">
+                        {% if user.profile.image %}
+                            <img src="{{ user.profile.image.url }}" 
+                            alt="Profile image" 
+                            class="rounded-circle img-fluid me-3 profile-avatar"
+                            style="width: 50px; height: 50px; object-fit: cover;"   
+                            >
+                        {% else %}
+                            <img src="https://boardshare-bkt-1.s3.us-east-1.amazonaws.com/profile_pics/default.jpg" 
+                            alt="Profile image" 
+                            class="rounded-circle img-fluid me-3 profile-avatar"
+                            style="width: 50px; height: 50px; object-fit: cover;"   
+                            >
+                        {% endif %}
+                    </a>
+                    <div>
+                        <p class="mb-0">{{ user.username }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container profile-container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar-container">
+                    {% if user.profile.image %}
+                        <img src="{{ user.profile.image.url }}" 
+                        alt="Profile image" 
+                        class="rounded-circle img-fluid me-3 profile-avatar"
+                        style="object-fit: cover;"   
+                        >
+                    {% else %}
+                        <img src="https://boardshare-bkt-1.s3.us-east-1.amazonaws.com/profile_pics/default.jpg" 
+                        alt="Profile image" 
+                        class="rounded-circle img-fluid me-3 profile-avatar"
+                        style="object-fit: cover;"   
+                        >
+                    {% endif %}
+                    
+                    <!-- <img src="/placeholder.svg" class="profile-avatar" id="profileAvatar" style="display: none;"> -->
+                    <!-- <label for="avatarUpload" class="avatar-upload">
+                        <i class="fas fa-camera"></i>
+                    </label>
+                    <input type="file" id="avatarUpload" style="display: none;" accept="image/*"> -->
+                </div>
+                <h1 class="profile-name">{{ user.username }}</h1>
+                <p class="profile-role">
+                    {% if is_librarian %}
+                        Librarian
+                    {% else %}
+                        Patron
+                    {% endif %}
+                </p>
+                <p class="profile-role">
+                    Joined on: {{ date_joined }}
+                </p>
+            </div>
+            
+            <div class="profile-body">
+                <div id="message-container" class="alert" style="display: none;"></div>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+                <div class="profile-section">
+                    <h2 class="profile-section-title">Profile Picture</h2>
+                    <div class="upload-body">
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %} 
+                            {% bootstrap_form p_form %}
+                            <div class="d-flex justify-content-center mt-4">
+                                <button class="btn btn-primary" type="submit">Upload Image</button>
+                                {% if is_librarian %}
+                                {% else %}
+                                    <a href="#" class="btn btn-primary btn-view request-upgrade mx-3"> Request Account Upgrade </a>
+                                {% endif %}
+                            </div>
+                        </form>
+                    </div>
+                    
+                    
+                    <div class="upload-preview" id="uploadPreview">
+                        <img src="/placeholder.svg" id="previewImage">
+                    </div>
+                    
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% include './partials/_footer.html' %}
+
+    <script>
+        // https://www.w3schools.com/js/js_htmldom_eventlistener.asp
+        // help with JS and client-side user interaction
+        document.querySelectorAll('.request-upgrade').forEach(button => {
+            button.addEventListener('click', function(event) {
+                event.preventDefault(); // Prevent default anchor behavior
+
+                fetch(`/upgradeAccountRequest/`,{
+                    method: 'POST',
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json().then(data => ({ status: response.status, body: data })))
+                .then(({ status, body }) => {
+                    if (status === 200) {
+                        showMessage(body.message, 'success');
+                    } else {
+                        showMessage(body.message, 'danger');
+                    }
+                })
+                .catch(error => {
+                    showMessage('An unexpected error occurred. Please try again.', 'danger');
+                    console.error('Error:', error);
+                });
+            });
+        });
+    
+        function showMessage(message, type) {
+            const messageContainer = document.getElementById('message-container');
+            messageContainer.innerText = message;
+            messageContainer.className = `alert alert-${type}`;
+            messageContainer.style.display = 'block';
+        }
+    </script>
+
+    {% comment %} <script>
+        // not working code
+        // const avatarUpload = document.getElementById('avatarUpload');
+        // const profileAvatar = document.getElementById('profileAvatar');
+        // const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+        // const uploadPreview = document.getElementById('uploadPreview');
+        // const previewImage = document.getElementById('previewImage');
+        // const saveAvatar = document.getElementById('saveAvatar');
+        
+        // avatarUpload.addEventListener('change', function(e) {
+        //     if (e.target.files.length > 0) {
+        //         const file = e.target.files[0];
+        //         const reader = new FileReader();
+                
+        //         reader.onload = function(e) {
+                    
+        //             previewImage.src = e.target.result;
+        //             uploadPreview.style.display = 'block';
+                    
+        //             profileAvatar.src = e.target.result;
+        //             profileAvatar.style.display = 'block';
+        //             avatarPlaceholder.style.display = 'none';
+        //         }
+                
+        //         reader.readAsDataURL(file);
+        //     }
+        // });
+        
+        // saveAvatar.addEventListener('click', function() {
+        //     alert('Profile picture saved successfully!');
+        // });
+    </script> {% endcomment %}
+</body>
+</html>

@@ -1,0 +1,273 @@
+{% load static %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Librarian Upload - BoardShare</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #f9fafb;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f3f4f6;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .upload-container {
+            flex: 1;
+            padding: 2rem 0;
+        }
+        
+        .upload-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+        }
+        
+        .upload-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 2rem;
+            color: white;
+            text-align: center;
+        }
+        
+        .upload-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+        
+        .upload-subtitle {
+            opacity: 0.9;
+        }
+        
+        .upload-body {
+            padding: 2rem;
+        }
+        
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control, .form-select {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .alert {
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: none;
+        }
+        
+        .alert-success {
+            background-color: #ecfdf5;
+            color: #065f46;
+        }
+        
+        .alert-danger {
+            background-color: #fef2f2;
+            color: #b91c1c;
+        }
+        
+        .alert-warning {
+            background-color: #fffbeb;
+            color: #92400e;
+        }
+        
+        .alert-info {
+            background-color: #eff6ff;
+            color: #1e40af;
+        }
+        
+        .footer {
+            background-color: white;
+            padding: 1.5rem 0;
+            margin-top: auto;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .custom-file-input::-webkit-file-upload-button {
+            visibility: hidden;
+        }
+        
+        .custom-file-input::before {
+            content: 'Select file';
+            display: inline-block;
+            background: var(--secondary);
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            outline: none;
+            white-space: nowrap;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+        
+        .custom-file-input:hover::before {
+            border-color: var(--primary);
+        }
+        
+        .custom-file-input:active::before {
+            background: #e5e7eb;
+        }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <div class="container">
+            <a class="navbar-brand" href="#">BoardShare</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Upload Game</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">My Collection</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cla:patronSearch' %}">Browse Games</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cla:logout' %}">Logout</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <a href="{% url 'cla:patronProfile' %}">
+                        {% if user.profile.image %}
+                            <img src="{{ user.profile.image.url }}" 
+                            alt="Profile image" 
+                            class="rounded-circle img-fluid me-3 profile-avatar"
+                            style="width: 50px; height: 50px; object-fit: cover;"   
+                            >
+                        {% else %}
+                            <img src="https://boardshare-bkt-1.s3.us-east-1.amazonaws.com/profile_pics/default.jpg" 
+                            alt="Profile image" 
+                            class="rounded-circle img-fluid me-3 profile-avatar"
+                            style="width: 50px; height: 50px; object-fit: cover;"   
+                            >
+                        {% endif %}
+                    </a>
+                    <div>
+                        <p class="mb-0">{{ user.username }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container upload-container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        
+        <div class="upload-card">
+            <div class="upload-header">
+                <h1 class="upload-title">Upload Boardgame</h1>
+                <p class="upload-subtitle">Share your boardgame with the community</p>
+            </div>
+            
+            <div class="upload-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %} 
+                    {% bootstrap_form form %}
+                    <div class="d-flex justify-content-center mt-4">
+                        <button class="btn btn-primary" type="submit">Upload Boardgame</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="">
+        <footer class="footer text-center">
+            <p class="text-muted mb-1">© 2025 University of Virginia</p>
+            <p class="text-muted small">This system is a CS 3240 class project. This system is not monitored, and no real information should be submitted.</p>
+        </footer>
+    </div>
+    
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInputs = document.querySelectorAll('input[type="file"]');
+            fileInputs.forEach(input => {
+                input.classList.add('custom-file-input');
+            });
+        });
+    </script>
+  </body>
+</html>

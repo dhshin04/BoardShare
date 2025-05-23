@@ -1,0 +1,335 @@
+{% load static %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Browse Games - BoardShare</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #f9fafb;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --bg-light: #f3f4f6;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+        
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .search-container {
+            padding: 2rem 0;
+        }
+        
+        .search-wrapper {
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        
+        .search-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .search-input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-input {
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            padding-right: 3rem;
+            width: 100%;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            outline: none;
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 1rem;
+            color: var(--text-light);
+            font-size: 1.25rem;
+        }
+        
+        .category-filters {
+            padding: 1rem 1.5rem;
+            background: var(--secondary);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .filter-chip {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .filter-chip:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .filter-chip.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        
+        .filter-chip i {
+            margin-right: 0.5rem;
+            font-size: 0.75rem;
+        }
+        
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem 0;
+        }
+        
+        .game-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.2s ease;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .game-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .game-body {
+            padding: 1.25rem;
+        }
+        
+        .game-title {
+            font-weight: 600;
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .game-text {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        
+        .game-meta {
+            padding: 0.75rem 1.25rem;
+            background: var(--secondary);
+            font-size: 0.875rem;
+        }
+        
+        .game-meta-item {
+            display: flex;
+            align-items: center;
+            color: var(--text-light);
+        }
+        
+        .game-meta-item i {
+            margin-right: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .game-actions {
+            padding: 1rem 1.25rem;
+            display: flex;
+        }
+        
+        .btn-view {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .btn-view:hover {
+            background-color: var(--primary-dark);
+            color: white;
+        }
+        
+        .btn-view i {
+            margin-right: 0.5rem;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .footer {
+            background-color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+        <div class="container">
+            <a class="navbar-brand" href="#{% url 'cla:librarianSearch' %}">BoardShare</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cla:librarianSearch' %}">Browse Games</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'librarians:upload' %}">Upload Game</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'cla:viewMyGames' %}">My Games</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cla:addCollection' %}">Add Collection</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cla:viewCollectionsLibrarian' %}">My Collections</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cla:manageAccessRequests' %}">Manage Requests</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cla:logout' %}">Logout</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center">
+                    <a href="{% url 'cla:patronProfile' %}">
+                        {% if user.profile.image %}
+                            <img src="{{ user.profile.image.url }}" 
+                            alt="Profile image" 
+                            class="rounded-circle img-fluid me-3 profile-avatar"
+                            style="width: 50px; height: 50px; object-fit: cover;"   
+                            >
+                        {% else %}
+                            <img src="https://boardshare-bkt-1.s3.us-east-1.amazonaws.com/profile_pics/default.jpg" 
+                            alt="Profile image" 
+                            class="rounded-circle img-fluid me-3 profile-avatar"
+                            style="width: 50px; height: 50px; object-fit: cover;"   
+                            >
+                        {% endif %}
+                    </a>
+                    <div>
+                        <p class="mb-0">{{ user.username }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+{% block content %}
+  <div class="container mt-4">
+    <h1 class="mb-3">My Games</h1>
+
+    {% if my_games %}
+            <div class="game-grid">
+                {% for item in my_games %}
+                <div class="game-card">
+                    {% with item.images.all.0 as first_image %}
+                        {% if first_image %}
+                            <img 
+                            src="{{ first_image.image.url }}" 
+                            class="game-img" 
+                            alt="{{ item.title }}">
+                        {% endif %}
+                    {% endwith %}
+                    <div class="game-body">
+                        <h5 class="game-title">{{ item.title }}</h5>
+                        <p class="game-text">{{ item.description|truncatewords:15 }}</p>
+                    </div>
+                    <div class="game-meta">
+                        <div class="game-meta-item mb-1">
+                            <i class="fas fa-user"></i> {{ item.owner }}
+                        </div>
+                        <div class="game-meta-item mb-1">
+                            <i class="fas fa-map-marker-alt"></i> {{ item.location }}
+                        </div>
+                        <div class="game-meta-item">
+                            <i class="fas fa-calendar"></i> {{ item.uploaded_at|date:"M d, Y" }}
+                        </div>
+                    </div>
+                    <div class="game-actions">
+                        <a href="{% url 'cla:itemDisplay' item.id %}" class="btn-view">
+                            <i class="fas fa-eye"></i> View Details
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+    {% else %}
+        <p class="alert alert-warning">You have no games.</p>
+    {% endif %}
+
+  </div>
+{% endblock %}
+
+
+{% include './partials/_footer.html' %}
+</body>
+</html>

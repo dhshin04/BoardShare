@@ -1,0 +1,69 @@
+{% load static %}
+{% comment %} <link rel="stylesheet" href="{% static 'polls/style.css' %}"> {% endcomment %}
+{# Load the tag library #}
+{% load bootstrap5 %}
+{% load socialaccount %}
+
+{# Load CSS and JavaScript #}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Register Type of Account for Catalouge and Lending App</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    </head>
+
+    <nav class="navbar navbar-expand-sm navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'cla:index' %}">Cataloging and Lending App Name Here</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href=""></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href=""></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href=""></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href=""></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container d-flex justify-content-center align-items-center mt-5">
+        <div class="card p-5 shadow" style="width: 650px;">
+            {% block content %}
+                <h2 class="text-center mb-4">Sign up for free with your Gmail Account</h2>
+                <p class="text-center lead">Select below the type of account you want to create</p>
+                <hr>
+                <a href="{% url 'cla:signupPatron' %}" class="btn btn-primary btn-lg" role="button">I want to borrow Board Games</a>
+                <br>
+                <a href="{% url 'cla:signupLibrarian' %}" class="btn btn-primary btn-lg" role="button">I want to lend my Board Games</a>
+            {% endblock %}
+        </div>
+    </div>
+
+    <div class="container">
+        <footer class="py-3 my-4">
+            <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+                {% comment %} <li class="nav-item"><a href="" class="nav-link px-2 text-muted">Link</a></li> {% endcomment %}
+            </ul>
+            <p class="text-center text-muted">© 2025 University of Virginia</p>
+            <p class="text-center text-muted">This system is a CS 3240 class project. This system is not monitored, and
+                no real information should be submitted.</p>
+        </footer>
+    </div>
+
+</html>
