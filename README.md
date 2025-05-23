@@ -10,6 +10,12 @@ To run this application, first create a new `.env` file with:
 DATABASE_NAME=your_db_name
 DATABASE_USER=your_db_user
 DATABASE_PASSWORD=your_db_password
+GOOGLE_CLIENT_ID=your_google_oauth_client_id
+GOOGLE_SECRET=your_google_secret
+AWS_ACCESS_KEY_ID=your_aws_access_key
+AWS_SECRET_ACCESS_KEY=your_aws_secret_access_key
+AWS_STORAGE_BUCKET_NAME=your_aws_bucket_name
+AWS_S3_REGION_NAME=your_aws_region_name
 ```
 
 If PostgreSQL is not configured, run:
