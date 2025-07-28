@@ -1,5 +1,11 @@
 # BoardShare #
-This is a CS 3240 Project: Board Game CMS built using Django. 
+This is a clone of [https://github.com/original/OriginalProjectName](https://github.com/uva-cs3240-s25/project-a-09), a CS 3240 Project at UVA. Since the original project was private, I created a public clone with my contributions below:
+
+## My Contributions
+1. Collectively developed board game lending CMS with 3 other developers.
+2. Added support for image uploads, user reviews, and in-app notifications after integrating PostgreSQL (local and Heroku Postgres) and AWS S3.
+3. Set up CI/CD pipeline via GitHub Actions CI and Heroku.
+4. Set up GitHub Secrets and `.gitignore` to prevent secret env variables from leaking onto commits.
 
 ## Tools Used ##
 This application was built using Django and deployed using GitHub Actions and Heroku. 
@@ -30,18 +36,3 @@ python manage.py runserver
 ```
 
 You can access the application by accessing `localhost:8000` or `127.0.0.1:8000`.
-
-## Contributions ##
-Anushka
-- Scrum Master
-
-Natalia
-- Testing Manager
-
-Andrew
-- Requirements Manager
-
-Donghwa
-- DevOps Manager
-
-All members contributed equally to the development of our web application. 
