@@ -1,5 +1,5 @@
 # BoardShare #
-This is a clone of [https://github.com/original/OriginalProjectName](https://github.com/uva-cs3240-s25/project-a-09), a CS 3240 Project at UVA. Since the original project was private, I created a public clone with my contributions below:
+This is a clone of [https://github.com/uva-cs3240-s25/project-a-09](https://github.com/uva-cs3240-s25/project-a-09), a CS 3240 Project at UVA. Since the original project was private, I created a public clone with my contributions below:
 
 ## My Contributions
 1. Collectively developed board game lending CMS with 3 other developers.
