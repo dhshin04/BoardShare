@@ -1,0 +1,25 @@
+name: Workflow Success Rate Report
+
+on:
+  workflow_dispatch: # allows you to run it on‑demand
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const since = new Date(Date.now() - 180 * 864e5).toISOString();
+            const runs = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'django.yml',
+              per_page: 100,
+              created: `>=${since}`
+            });
+            const total   = runs.data.total_count;
+            const success = runs.data.workflow_runs.filter(r => r.conclusion === 'success').length;
+            const rate    = total ? ((success/total)*100).toFixed(2) : '0.00';
+            console.log(`✅ Success: ${success}/${total} runs → ${rate}%`);
