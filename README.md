@@ -36,3 +36,9 @@ python manage.py runserver
 ```
 
 You can access the application by accessing `localhost:8000` or `127.0.0.1:8000`.
+
+## Contributors ##
+- [Natalia Wunder](https://github.com/nataliawunder)
+- [Anushka](https://github.com/Anushka1010)
+- [Andrew](https://github.com/Myshro)
+- [Winnie Liang](https://github.com/winnieLiang03)
